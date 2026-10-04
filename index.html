@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VManhua · Lunaris - Đọc Truyện Miễn Phí</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* ══════════════════════════════════════════
+           VManhua — LUNARIS THEME
+           Tất cả màu dùng CSS variables — không hardcode
+        ══════════════════════════════════════════ */
+        :root {
+            /* ── Nền ── */
+            --bg:         #0d0615;
+            --bg2:        #100820;
+            --surface:    #0E1122;
+            --card:       #111426;
+            --card-hover: #171B34;
+
+            /* ── Accent chính: Indigo/Blue-Purple ── */
+            --accent:        #a855f7;
+            --accent-dark:   #7c3aed;
+            --accent-light:  #c084fc;
+            --accent-rgb:    168, 85, 247;
+
+            /* ── Palette phụ ── */
+            --gold:     #f5d67a;
+            --gold-rgb: 245, 214, 122;
+            --lavender: #e9d5ff;
+            --cyan:     #38BDF8;
+            --cyan-rgb: 56, 189, 248;
+            --green:    #34D399;
+            --orange:   #FB923C;
+            --pink:     #F472B6;
+            --red:      #F43F5E;
+
+            /* ── Border ── */
+            --border:      rgba(var(--accent-rgb), 0.15);
+            --border-glow: rgba(var(--accent-rgb), 0.4);
+
+            /* ── Text ── */
+            --text:       #EEF2FF;
+            --text-dim:   #7C86B5;
+            --text-muted: #3D4580;
+
+            /* ── Chapter rows ── */
+            --chap-bg:     #0E1122;
+            --chap-border: rgba(var(--accent-rgb), 0.15);
+            --chap-hover:  rgba(var(--accent-rgb), 0.1);
+
+            /* ── Radius ── */
+            --r:    14px;
+            --r-sm: 8px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y;
+        }
+
+        /* Ambient glow */
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background:
+                radial-gradient(ellipse 55% 40% at 90% 5%, rgba(var(--accent-rgb), 0.07) 0%, transparent 65%),
+                radial-gradient(ellipse 40% 30% at 10% 80%, rgba(var(--cyan-rgb), 0.04) 0%, transparent 60%);
+            pointer-events: none; z-index: 0;
+        }
+
+        #sakura-canvas {
+            position: fixed; inset: 0;
+            pointer-events: none; z-index: 1; opacity: 0.45;
+        }
+
+        /* ═══════════════════════════════════════
+           SCROLLBAR
+        ═══════════════════════════════════════ */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--accent), var(--lavender));
+            border-radius: 10px;
+        }
+
+        /* ═══════════════════════════════════════
+           HEADER
+        ═══════════════════════════════════════ */
+        .header {
+            background: rgba(10, 2, 20, 0.97);
+            position: sticky; top: 0; z-index: 1000;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Shimmer line */
+        .header::after {
+            content: '';
+            position: absolute; bottom: -1px; left: 0; right: 0; height: 1.5px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                var(--accent) 20%,
+                var(--lavender) 50%,
+                var(--accent) 80%,
+                transparent 100%);
+            background-size: 200% 100%;
+            animation: hdr-sweep 5s linear infinite;
+        }
+        @keyframes hdr-sweep {
+            0%   { background-position: -100% 0; }
+            100% { background-position: 200%  0; }
+        }
+
+        .header-main {
+            padding: 0 16px; height: 58px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        /* ── Logo ── */
+        .logo-wrap {
+            display: flex; align-items: center; gap: 10px;
+            text-decoration: none; position: relative;
+        }
+
+        .logo-badge {
+            width: 42px; height: 42px; border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 22px rgba(var(--accent-rgb), 0.5), inset 0 1px 0 rgba(255,255,255,0.2);
+            position: relative; overflow: hidden; flex-shrink: 0;
+            border: 2px solid rgba(var(--accent-rgb), 0.6);
+        }
+        .logo-badge img {
+            width: 100%; height: 100%; object-fit: cover;
+            border-radius: 10px; display: block;
+        }
+        .logo-badge::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 55%);
+            pointer-events: none;
+        }
+
+        .logo-text-wrap {
+            display: flex; flex-direction: column; line-height: 1;
+        }
+        .logo-line1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.3rem; letter-spacing: 4px;
+            color: var(--text);
+        }
+        .logo-line1 span { color: var(--accent-light); }
+        .logo-line2 {
+            font-size: 0.5rem; letter-spacing: 3px; font-weight: 600;
+            color: var(--text-muted); text-transform: uppercase; margin-top: 1px;
+        }
+
+        /* ── Header right ── */
+        .header-right { display: flex; align-items: center; gap: 3px; }
+
+        .hbtn {
+            width: 40px; height: 40px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-dim); cursor: pointer;
+            transition: all 0.22s;
+            position: relative; text-decoration: none;
+            border: none; background: none;
+        }
+        .hbtn:hover {
+            background: rgba(var(--accent-rgb), 0.12);
+            color: var(--accent-light);
+            box-shadow: 0 0 14px rgba(var(--accent-rgb), 0.15);
+        }
+        .hbtn i { font-size: 1rem; }
+
+        /* Menu button */
+        .hbtn-menu {
+            background: rgba(var(--accent-rgb), 0.1);
+            border: 1px solid rgba(var(--accent-rgb), 0.25) !important;
+            color: var(--accent-light) !important;
+        }
+        .hbtn-menu:hover {
+            background: rgba(var(--accent-rgb), 0.2) !important;
+            box-shadow: 0 0 16px rgba(var(--accent-rgb), 0.22) !important;
+        }
+
+        /* Notif badge */
+        .hbtn-notif .notif-badge {
+            position: absolute; top: 5px; right: 5px;
+            min-width: 16px; height: 16px;
+            background: linear-gradient(135deg, var(--accent), var(--pink));
+            border-radius: 20px; border: 1.5px solid var(--bg);
+            font-size: 0.6rem; font-weight: 800; color: #fff;
+            display: none; align-items: center; justify-content: center;
+            padding: 0 3px; animation: badge-pulse 2s infinite;
+            font-family: 'Outfit', sans-serif; line-height: 1;
+            box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.7);
+        }
+        .hbtn-notif.has-notif .notif-badge { display: flex; }
+        @keyframes badge-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); box-shadow: 0 0 14px rgba(var(--accent-rgb), 0.9); }
+        }
+
+        /* ═══════════════════════════════════════
+           NOTIFICATION POPUP
+        ═══════════════════════════════════════ */
+        .notif-popup {
+            position: fixed; top: 64px; right: 8px;
+            width: 320px; max-width: calc(100vw - 16px);
+            background: var(--surface);
+            border: 1px solid rgba(var(--accent-rgb), 0.25);
+            border-radius: 18px; z-index: 5500;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+            display: none; overflow: hidden;
+            animation: popIn 0.2s ease-out;
+        }
+        .notif-popup.show { display: block; }
+        @keyframes popIn {
+            from { opacity:0; transform:translateY(-10px) scale(0.96); }
+            to   { opacity:1; transform:translateY(0) scale(1); }
+        }
+        .notif-popup-header {
+            display:flex; align-items:center; justify-content:space-between;
+            padding:13px 16px 11px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, rgba(var(--accent-rgb),0.08), rgba(196,181,253,0.04));
+        }
+        .notif-popup-title {
+            font-family:'Syne',sans-serif; font-size:0.85rem; font-weight:800;
+            letter-spacing:1.5px; display:flex; align-items:center; gap:8px; color:var(--text);
+        }
+        .notif-popup-title i { color: var(--accent-light); }
+        .notif-mark-read {
+            font-size:0.72rem; color:var(--accent-light); cursor:pointer;
+            font-weight:600; background:none; border:none;
+            font-family:'Outfit',sans-serif; padding:4px 10px;
+            border-radius:8px; transition:background 0.2s;
+        }
+        .notif-mark-read:hover { background: rgba(var(--accent-rgb), 0.12); }
+        .notif-popup-list { max-height:340px; overflow-y:auto; }
+        .notif-popup-item {
+            display:flex; align-items:center; gap:11px;
+            padding:11px 14px; text-decoration:none; color:var(--text);
+            border-bottom: 1px solid var(--border);
+            transition:background 0.15s; position:relative;
+        }
+        .notif-popup-item:hover { background: rgba(var(--accent-rgb), 0.07); }
+        .notif-popup-item.unread { background: rgba(var(--accent-rgb), 0.04); }
+        .notif-popup-item .notif-dot-sm {
+            width:7px; height:7px;
+            background: var(--accent); border-radius:50%;
+            flex-shrink:0; box-shadow:0 0 6px var(--accent);
+            animation:badge-pulse 2s infinite;
+        }
+        .notif-popup-item .notif-thumb {
+            width:40px; height:54px; border-radius:9px; object-fit:cover;
+            border: 1px solid var(--border); flex-shrink:0; background:var(--chap-bg);
+        }
+        .notif-popup-item .notif-info { flex:1; min-width:0; }
+        .notif-popup-item .notif-name {
+            font-size:0.82rem; font-weight:600;
+            white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:3px;
+        }
+        .notif-popup-item .notif-chap { font-size:0.72rem; color:var(--accent-light); font-weight:600; margin-bottom:2px; }
+        .notif-popup-item .notif-time { font-size:0.68rem; color:var(--text-muted); display:flex; align-items:center; gap:4px; }
+        .notif-popup-footer { padding:11px 14px; border-top: 1px solid var(--border); text-align:center; }
+        .notif-popup-footer a { font-size:0.78rem; color:var(--accent-light); text-decoration:none; font-weight:600; }
+        .notif-popup-empty { padding:30px 20px; text-align:center; color:var(--text-muted); font-size:0.82rem; }
+        .notif-popup-empty i { display:block; font-size:1.8rem; margin-bottom:8px; opacity:0.3; color:var(--accent); }
+
+        /* ═══════════════════════════════════════
+           USER MENU POPUP
+        ═══════════════════════════════════════ */
+        .user-menu-popup {
+            position: fixed; top: 64px; right: 8px;
+            width: 260px; max-width: calc(100vw - 16px);
+            background: var(--surface);
+            border: 1px solid rgba(var(--accent-rgb), 0.25);
+            border-radius: 18px; z-index: 5500;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+            display: none; overflow: hidden;
+            animation: popIn 0.2s ease-out;
+        }
+        .user-menu-popup.show { display: block; }
+        .user-menu-header {
+            padding: 14px 16px 12px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, rgba(var(--accent-rgb),0.08), rgba(196,181,253,0.04));
+        }
+        .user-menu-name {
+            font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 800;
+            color: var(--text); margin-bottom: 2px;
+        }
+        .user-menu-sub { font-size: 0.72rem; color: var(--text-muted); }
+        .user-menu-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; text-decoration: none; color: var(--text);
+            font-size: 0.88rem; font-weight: 500;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s; cursor: pointer;
+            background: none; border-left: none; border-right: none; border-top: none;
+            width: 100%; text-align: left; font-family: 'Outfit', sans-serif;
+        }
+        .user-menu-item:last-child { border-bottom: none; }
+        .user-menu-item:hover { background: rgba(var(--accent-rgb), 0.08); }
+        .user-menu-item i { width: 18px; text-align: center; color: var(--accent-light); font-size: 0.85rem; }
+        .user-menu-item.danger { color: var(--red); }
+        .user-menu-item.danger i { color: var(--red); }
+
+        /* ═══════════════════════════════════════
+           SEARCH
+        ═══════════════════════════════════════ */
+        .search-wrap {
+            display: none; padding: 10px 14px 12px;
+            background: rgba(7,8,15,0.98);
+            border-top: 1px solid var(--border);
+            position: relative; animation: slideDown 0.25s ease;
+        }
+        .search-wrap.active { display: block; }
+
+        .search-inner {
+            display:flex; align-items:center;
+            background: var(--surface);
+            border: 1.5px solid rgba(var(--accent-rgb), 0.25);
+            border-radius: 13px; padding: 0 14px; gap: 10px; transition: all 0.25s;
+        }
+        .search-inner:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.12), 0 0 20px rgba(var(--accent-rgb), 0.08);
+        }
+        .search-inner i { color: var(--text-muted); font-size: 0.95rem; }
+        .search-inner input {
+            flex:1; background:none; border:none; padding:13px 0;
+            color:var(--text); outline:none; font-size:0.92rem; font-family:'Outfit',sans-serif;
+        }
+        .search-inner input::placeholder { color:var(--text-muted); }
+
+        .search-results {
+            position: absolute; top: calc(100% - 2px); left: 14px; right: 14px;
+            background: var(--surface);
+            border: 1px solid rgba(var(--accent-rgb), 0.22); border-top: none;
+            border-radius: 0 0 16px 16px; z-index: 5000;
+            display: none; max-height: 430px; overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.85);
+        }
+        .search-results.show { display: block; }
+
+        .search-item {
+            display:flex; align-items:center; gap:12px;
+            padding:10px 14px; text-decoration:none; color:var(--text);
+            border-bottom: 1px solid var(--border);
+            transition:background 0.15s;
+        }
+        .search-item:hover { background: rgba(var(--accent-rgb), 0.07); }
+        .search-item img {
+            width:44px; height:60px; object-fit:cover;
+            border-radius:9px; border: 1px solid var(--border);
+        }
+        .search-item-title { font-size:0.88rem; font-weight:600; margin-bottom:4px; }
+        .search-item-meta { display:flex; align-items:center; gap:7px; font-size:0.74rem; color:var(--text-dim); }
+        .view-all-link {
+            display:flex; align-items:center; justify-content:center; gap:8px;
+            padding:12px; background: rgba(var(--accent-rgb), 0.07); color:var(--accent-light);
+            text-decoration:none; font-size:0.83rem; font-weight:700;
+            border-radius:0 0 16px 16px;
+        }
+
+        /* Status pills */
+        .pill { padding:2px 8px; border-radius:6px; font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; }
+        .pill-ongoing { background:rgba(52,211,153,0.15); color:var(--green);   border:1px solid rgba(52,211,153,0.25); }
+        .pill-pause   { background:rgba(251,146,60,0.15);  color:var(--orange); border:1px solid rgba(251,146,60,0.25); }
+        .pill-end     { background:rgba(99,102,241,0.15);  color:var(--accent-light); border:1px solid rgba(var(--accent-rgb),0.25); }
+        .pill-dropped { background:rgba(56,189,248,0.12);  color:var(--cyan);   border:1px solid rgba(var(--cyan-rgb),0.2); }
+
+        /* Advanced search link */
+        .search-advanced-link {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            margin-top: 10px; padding: 9px 14px;
+            background: rgba(var(--accent-rgb), 0.07);
+            border: 1px solid rgba(var(--accent-rgb), 0.18);
+            border-radius: 10px; color: var(--accent-light);
+            font-size: 0.85rem; font-weight: 600; text-decoration: none;
+            transition: all 0.2s; letter-spacing: 0.3px;
+        }
+        .search-advanced-link:hover {
+            background: rgba(var(--accent-rgb), 0.14);
+            border-color: rgba(var(--accent-rgb), 0.4);
+            box-shadow: 0 0 14px rgba(var(--accent-rgb), 0.12);
+        }
+
+        /* ═══════════════════════════════════════
+           TICKER
+        ═══════════════════════════════════════ */
+        .ticker-bar {
+            background: linear-gradient(90deg,
+                rgba(var(--accent-rgb),0.07),
+                rgba(196,181,253,0.04),
+                rgba(var(--accent-rgb),0.07));
+            border-bottom: 1px solid var(--border);
+            padding: 7px 14px;
+            display: flex; align-items: center; gap: 10px;
+            overflow: hidden; position: relative; z-index: 2;
+        }
+        .ticker-tag {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 0.7rem; letter-spacing: 2px;
+            background: var(--accent); color: #fff;
+            padding: 2px 8px; border-radius: 4px; flex-shrink: 0;
+        }
+        .ticker-scroll-wrap { flex:1; overflow:hidden; }
+        .ticker-scroll-inner {
+            display: inline-block;
+            white-space: nowrap; font-size: 0.76rem; color: var(--text-dim);
+            animation: ticker-run 28s linear infinite;
+        }
+        @keyframes ticker-run {
+            0%   { transform: translateX(100vw); }
+            100% { transform: translateX(-100%); }
+        }
+        .ticker-sep { color: var(--accent-light); margin: 0 12px; }
+
+        /* ═══════════════════════════════════════
+           OVERLAY + SIDEBAR
+        ═══════════════════════════════════════ */
+        .overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.78);
+            display: none; z-index: 2500;
+            pointer-events: none;
+        }
+        .overlay.active-overlay { pointer-events: auto; }
+
+        .sidebar {
+            position: fixed; top: 0; right: -310px; width: 288px; height: 100%;
+            background: var(--surface);
+            z-index: 4000;
+            transition: right 0.3s ease;
+            border-left: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            box-shadow: -20px 0 80px rgba(0,0,0,0.85);
+        }
+        .sidebar.active { right: 0; }
+
+        .sidebar-header {
+            padding: 30px 20px 24px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(var(--accent-rgb),0.07) 0%, transparent 100%);
+            position: relative; overflow: hidden;
+        }
+        .sidebar-header::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(var(--accent-rgb),0.1), transparent 70%);
+        }
+
+        .sidebar-logo-wrap {
+            position: relative; width: 72px; height: 72px; margin: 0 auto 14px;
+        }
+        .sidebar-logo-wrap::before {
+            content: '';
+            position: absolute; inset: -3px; border-radius: 22px;
+            background: conic-gradient(from 0deg, var(--accent), var(--gold), var(--lavender), var(--accent));
+            animation: spin-ring 5s linear infinite; opacity: 0.75;
+        }
+        @keyframes spin-ring { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+
+        .sidebar-logo-wrap img {
+            width: 72px; height: 72px; border-radius: 20px;
+            position: relative; z-index: 1; object-fit: cover;
+        }
+        .sidebar-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.4rem; letter-spacing: 4px; color: var(--text);
+            position: relative;
+        }
+        .sidebar-title span { color: var(--accent-light); }
+        .sidebar-sub {
+            font-size: 0.68rem; color: var(--text-muted);
+            margin-top: 4px; letter-spacing: 2.5px;
+            position: relative;
+        }
+
+        .side-nav { padding: 12px 10px; flex: 1; overflow-y: auto; }
+
+        .side-link {
+            display: flex; align-items: center; gap: 13px;
+            padding: 12px 14px; color: var(--text-dim);
+            text-decoration: none; border-radius: 12px;
+            margin-bottom: 3px; transition: all 0.2s;
+            font-size: 0.9rem; font-weight: 500; position: relative;
+        }
+        .side-link:hover { background: rgba(var(--accent-rgb), 0.08); color: var(--text); }
+        .side-link:hover .s-icon { transform: scale(1.1) rotate(-5deg); }
+
+        .s-icon {
+            width: 36px; height: 36px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.88rem; flex-shrink: 0; transition: transform 0.2s;
+        }
+        .ic-blue   { background:rgba(56,189,248,0.12);  color:var(--cyan);    border:1px solid rgba(56,189,248,0.2); }
+        .ic-pink   { background:rgba(244,114,182,0.12); color:var(--pink);    border:1px solid rgba(244,114,182,0.2); }
+        .ic-purple { background:rgba(196,181,253,0.12); color:var(--lavender);border:1px solid rgba(196,181,253,0.2); }
+        .ic-green  { background:rgba(52,211,153,0.12);  color:var(--green);   border:1px solid rgba(52,211,153,0.2); }
+        .ic-orange { background:rgba(251,191,36,0.12);  color:var(--gold);    border:1px solid rgba(251,191,36,0.2); }
+        .ic-teal   { background:rgba(56,189,248,0.1);   color:var(--cyan);    border:1px solid rgba(56,189,248,0.18); }
+        .ic-red    { background:rgba(99,102,241,0.12);  color:var(--accent-light); border:1px solid rgba(var(--accent-rgb),0.2); }
+
+        .sidebar-footer {
+            padding: 14px 20px; border-top: 1px solid var(--border);
+            text-align: center; font-size: 0.74rem; color: var(--text-muted);
+        }
+
+        /* ═══════════════════════════════════════
+           FILTER BAR
+        ═══════════════════════════════════════ */
+        .filter-bar {
+            padding: 14px 14px 8px;
+            display: flex; align-items: center; gap: 10px;
+            position: relative; z-index: 500;
+        }
+
+        .active-tag-pill {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(var(--accent-rgb), 0.1);
+            border: 1px solid rgba(var(--accent-rgb), 0.3);
+            border-radius: 30px; padding: 7px 14px;
+            font-size: 0.8rem; font-weight: 600; color: var(--accent-light);
+        }
+        .tag-icon { color: var(--accent-light); }
+        .tag-close {
+            color: var(--text-muted); text-decoration: none;
+            margin-left: 4px; padding: 0 4px; border-radius: 50%;
+            transition: all 0.2s; font-size: 0.75rem;
+        }
+        .tag-close:hover { background: rgba(var(--accent-rgb), 0.2); color: var(--accent-light); }
+
+        .section-title-pill {
+            display: flex; align-items: center; gap: 9px;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.88rem; font-weight: 800; letter-spacing: 1px;
+            color: var(--text);
+        }
+        .st-indicator {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 12px var(--accent), 0 0 4px var(--accent);
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%,100% { transform:scale(1); opacity:1; }
+            50% { transform:scale(0.65); opacity:0.55; }
+        }
+
+        /* Dropdown */
+        .custom-dropdown { position:relative; margin-left:auto; flex-shrink:0; z-index:501; }
+
+        .dropdown-trigger {
+            display:flex; align-items:center; gap:7px;
+            background: var(--surface);
+            border: 1.5px solid rgba(var(--accent-rgb), 0.18);
+            border-radius:50px; padding:8px 14px 8px 12px;
+            font-size:0.8rem; font-weight:600; color:var(--text);
+            cursor:pointer; font-family:'Outfit',sans-serif;
+            transition:all 0.22s; white-space:nowrap; user-select:none;
+        }
+        .dropdown-trigger i.dt-icon { color: var(--accent-light); font-size:0.72rem; }
+        .dropdown-trigger i.dt-chevron { font-size:0.65rem; color:var(--text-muted); transition:transform 0.25s; }
+        .dropdown-trigger.open { border-color: rgba(var(--accent-rgb), 0.5); background: rgba(var(--accent-rgb), 0.07); }
+        .dropdown-trigger.open i.dt-chevron { transform:rotate(180deg); }
+
+        .dropdown-panel {
+            position:absolute; top:calc(100% + 8px); right:0;
+            min-width:220px; background: var(--surface);
+            border: 1px solid rgba(var(--accent-rgb), 0.2); border-radius:16px;
+            padding:8px 6px; z-index:3000;
+            box-shadow:0 16px 48px rgba(0,0,0,0.85);
+            display:none; animation:dropIn 0.18s ease-out;
+        }
+        .dropdown-panel.show { display:block; }
+        @keyframes dropIn {
+            from { opacity:0; transform:translateY(-8px) scale(0.97); }
+            to   { opacity:1; transform:translateY(0) scale(1); }
+        }
+        .dp-label {
+            font-size:0.62rem; font-weight:800; color:var(--text-muted);
+            letter-spacing:2px; text-transform:uppercase; padding:6px 12px 10px;
+        }
+        .dp-item {
+            display:flex; align-items:center; gap:12px; padding:10px 14px;
+            border-radius:10px; cursor:pointer; transition:background 0.15s;
+            font-size:0.88rem; font-weight:500; color:var(--text-dim);
+        }
+        .dp-item:hover { background: rgba(var(--accent-rgb), 0.08); color:var(--text); }
+        .dp-item.active { color: var(--accent-light); font-weight:700; }
+        .dp-item .dp-item-icon { font-size:0.85rem; width:16px; text-align:center; flex-shrink:0; }
+        .dp-item .dp-item-check { margin-left:auto; font-size:0.82rem; color: var(--accent-light); opacity:0; }
+        .dp-item.active .dp-item-check { opacity:1; }
+
+        /* ═══════════════════════════════════════
+           GRID
+        ═══════════════════════════════════════ */
+        .grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 10px; padding: 6px 12px 100px;
+            position: relative; z-index: 1; isolation: isolate;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 16px; padding: 12px 24px 24px;
+            }
+            .bottom-nav { display: none; }
+            .header-main { padding: 0 32px; }
+            .filter-bar { padding: 14px 24px 8px; }
+            .pagination { padding: 24px 24px 48px; }
+        }
+
+        /* ═══════════════════════════════════════
+           CARDS
+        ═══════════════════════════════════════ */
+        .card {
+            background: var(--card);
+            border-radius: var(--r);
+            overflow: hidden; text-decoration: none; color: var(--text);
+            border: 1px solid rgba(var(--accent-rgb), 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            position: relative; display: flex; flex-direction: column;
+        }
+        .card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.65), 0 0 28px rgba(var(--accent-rgb), 0.12);
+            border-color: rgba(var(--accent-rgb), 0.35);
+        }
+        .card::before {
+            content: '';
+            position: absolute; top: 0; right: 0;
+            width: 44px; height: 44px;
+            background: linear-gradient(225deg, rgba(var(--accent-rgb),0.1), transparent);
+            pointer-events: none; z-index: 5;
+        }
+
+        .card-thumb {
+            position: relative; overflow: hidden;
+            aspect-ratio: 2 / 3;
+        }
+        .card-thumb img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: block; transition: transform 0.45s ease;
+        }
+        .card:hover .card-thumb img { transform: scale(1.07); }
+        .card-thumb::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0; height: 50%;
+            background: linear-gradient(transparent, rgba(7,8,15,0.93));
+            pointer-events: none;
+        }
+
+        /* Status badges */
+        .badge {
+            position: absolute; top: 0; left: 0;
+            padding: 4px 10px;
+            font-size: 0.58rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 1px;
+            border-bottom-right-radius: 10px; z-index: 10;
+            font-family: 'Syne', sans-serif;
+        }
+        .badge-ongoing { background:linear-gradient(135deg,#059669,#34D399); color:#fff; box-shadow:0 2px 8px rgba(5,150,105,0.4); }
+        .badge-pause   { background:linear-gradient(135deg,#B45309,#FB923C); color:#fff; box-shadow:0 2px 8px rgba(180,83,9,0.4); }
+        .badge-end     { background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:#fff; box-shadow:0 2px 8px rgba(var(--accent-rgb),0.4); }
+        .badge-dropped { background:linear-gradient(135deg,#0E7490,#38BDF8); color:#fff; box-shadow:0 2px 8px rgba(14,116,144,0.4); }
+
+        .badge-views {
+            position: absolute; bottom: 8px; right: 8px; z-index: 10;
+            display: flex; align-items: center; gap: 4px;
+            background: rgba(0,0,0,0.72);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 8px; padding: 3px 7px;
+            font-size: 0.65rem; color: #bbb;
+        }
+        .badge-views i { color: var(--accent-light); font-size: 0.58rem; }
+
+        .info { padding: 9px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+
+        .title {
+            font-size: 0.82rem; font-weight: 700; line-height: 1.35;
+            color: var(--text);
+            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-family: 'Syne', sans-serif;
+        }
+
+        /* ═══════════════════════════════════════
+           CHAPTER ROWS
+        ═══════════════════════════════════════ */
+        .chap-row {
+            display: flex; align-items: center; gap: 7px;
+            padding: 7px 8px;
+            border-radius: var(--r-sm);
+            background: var(--chap-bg);
+            border: 1px solid var(--chap-border);
+            border-left: 2.5px solid rgba(var(--accent-rgb), 0.3);
+            margin-bottom: 4px;
+            transition: all 0.2s; cursor: pointer;
+            position: relative; overflow: hidden;
+        }
+        .chap-row:hover {
+            background: var(--chap-hover);
+            border-color: rgba(var(--accent-rgb), 0.4);
+            border-left-color: var(--accent);
+            transform: translateX(2px);
+        }
+        .chap-row.read { opacity: 0.32; filter: grayscale(0.75); }
+
+        .chap-icon {
+            width: 27px; height: 27px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; font-size: 0.66rem; color: #fff;
+        }
+        .chap-icon-new { background: var(--accent); box-shadow:0 2px 10px rgba(var(--accent-rgb),0.5); }
+        .chap-icon-old { background: var(--accent-dark); box-shadow:0 2px 10px rgba(var(--accent-rgb),0.35); }
+        .chap-row.read .chap-icon-new,
+        .chap-row.read .chap-icon-old {
+            background: rgba(28,25,53,0.7); box-shadow: none; color: var(--text-muted);
+        }
+
+        .chap-text { flex: 1; min-width: 0; overflow: hidden; }
+        .chap-name { font-size: 0.75rem; font-weight: 600; color: var(--text); line-height: 1.3; display: block; word-break: keep-all; }
+        .chap-time { font-size: 0.62rem; color: var(--text-muted); margin-top: 1px; }
+
+        .chap-new-tag {
+            position: absolute; top: 50%; right: 7px;
+            transform: translateY(-50%);
+            background: var(--accent); color: #fff;
+            font-size: 0.44rem; font-weight: 900; padding: 2px 5px;
+            border-radius: 4px; letter-spacing: 0.5px; white-space: nowrap;
+            font-family: 'Syne', sans-serif; line-height: 1.4;
+            pointer-events: none; animation: glow-new 2s infinite;
+        }
+        @keyframes glow-new {
+            0%,100% { box-shadow:0 0 4px rgba(var(--accent-rgb),0.4); }
+            50%      { box-shadow:0 0 12px rgba(var(--accent-rgb),0.85); }
+        }
+
+        /* ═══════════════════════════════════════
+           PAGINATION
+        ═══════════════════════════════════════ */
+        .pagination {
+            display: flex; justify-content: center; align-items: center;
+            padding: 24px 14px 90px; gap: 7px;
+        }
+        .p-link {
+            background: var(--surface); color: var(--text-dim);
+            width: 42px; height: 42px; border-radius: 11px;
+            text-decoration: none; border: 1px solid var(--border);
+            font-size: 0.88rem; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; font-family: 'Outfit',sans-serif; font-weight: 600;
+        }
+        .p-link:hover:not(.active):not(.disabled) {
+            border-color: var(--accent); color: var(--accent-light);
+            background: rgba(var(--accent-rgb), 0.08); box-shadow: 0 0 14px rgba(var(--accent-rgb), 0.12);
+        }
+        .p-link.active {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            border: none; color: #fff;
+            width: auto; min-width: 74px; padding: 0 14px;
+            box-shadow: 0 4px 22px rgba(var(--accent-rgb), 0.4);
+        }
+        .p-link.disabled { opacity: 0.2; pointer-events: none; }
+
+        /* ═══════════════════════════════════════
+           BOTTOM NAV
+        ═══════════════════════════════════════ */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: rgba(10,12,26,0.98);
+            border-top: 1px solid var(--border);
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            z-index: 900;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        .bnav-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 10px 0; text-decoration: none;
+            color: var(--text-muted); transition: all 0.2s; gap: 4px;
+            font-size: 0.6rem; font-weight: 600; letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+        .bnav-item.active { color: var(--accent-light); }
+        .bnav-item.active i { filter: drop-shadow(0 0 8px var(--accent)); }
+        .bnav-item:hover { color: var(--accent-light); }
+        .bnav-item i { font-size: 1.05rem; }
+
+        /* ═══════════════════════════════════════
+           SYSTEM NOTIFICATION
+        ═══════════════════════════════════════ */
+        #sys-notify {
+            position: fixed; bottom: 78px; left: 50%;
+            transform: translateX(-50%) translateY(180%);
+            width: 92%; max-width: 390px;
+            background: var(--surface);
+            border: 1px solid rgba(var(--accent-rgb), 0.3);
+            border-radius: 20px; padding: 15px 18px 13px;
+            z-index: 100000;
+            display: flex; flex-direction: column; gap: 10px;
+            transition: transform 0.5s cubic-bezier(0.23,1,0.32,1), opacity 0.4s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.75);
+            pointer-events: all;
+        }
+        #sys-notify.active { transform: translateX(-50%) translateY(0); }
+        #sys-notify.hidden {
+            transform: translateX(-50%) translateY(180%);
+            opacity: 0; pointer-events: none;
+        }
+
+        .notify-top { display: flex; align-items: flex-start; gap: 13px; }
+        .notify-icon {
+            font-size: 1.6rem; flex-shrink: 0;
+            animation: float-icon 3s ease-in-out infinite;
+        }
+        @keyframes float-icon {
+            0%,100% { transform:translateY(0) rotate(0deg); }
+            50%     { transform:translateY(-6px) rotate(8deg); }
+        }
+        .notify-body { flex: 1; }
+        .notify-label {
+            font-size: 0.65rem; font-weight: 900; letter-spacing: 2.5px;
+            color: var(--accent-light); text-transform: uppercase; margin-bottom: 5px;
+        }
+        .notify-msg { font-size: 0.78rem; color: rgba(200,200,220,0.8); line-height: 1.65; }
+        .notify-msg p { margin-bottom: 2px; }
+        .notify-author {
+            font-size: 0.68rem; font-weight: 800; color: var(--gold);
+            text-align: right; margin-top: 7px; letter-spacing: 1px;
+        }
+
+        .notify-btns { display: flex; gap: 8px; }
+        .notify-btn {
+            flex: 1; padding: 9px 10px;
+            border-radius: 10px; border: none; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s; letter-spacing: 0.3px;
+        }
+        .notify-btn-close {
+            background: rgba(var(--accent-rgb), 0.08);
+            border: 1px solid rgba(var(--accent-rgb), 0.22);
+            color: rgba(238,242,255,0.75);
+        }
+        .notify-btn-close:hover {
+            background: rgba(var(--accent-rgb), 0.16);
+            color: #fff;
+        }
+        .notify-btn-mute {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: #fff;
+            box-shadow: 0 3px 14px rgba(var(--accent-rgb), 0.38);
+        }
+        .notify-btn-mute:hover {
+            box-shadow: 0 4px 20px rgba(var(--accent-rgb), 0.6);
+            transform: translateY(-1px);
+        }
+
+        /* ═══════════════════════════════════════
+           ANIMATIONS
+        ═══════════════════════════════════════ */
+        @keyframes slideDown {
+            from { opacity:0; transform:translateY(-8px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="sakura-canvas"></canvas>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="header-main">
+        <a href="/" class="logo-wrap">
+            <div class="logo-badge">
+                <img src="/static/logo.jpg" alt="VManhua">
+            </div>
+            <div class="logo-text-wrap">
+                <div class="logo-line1">V<span>MANHUA</span></div>
+                <div class="logo-line2">ĐỌC MANHUA MIỄN PHÍ</div>
+            </div>
+        </a>
+        <div class="header-right">
+            <button class="hbtn" onclick="toggleSearch()" title="Tìm kiếm">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <button class="hbtn hbtn-notif" id="bellBtn" onclick="toggleNotifPopup()" title="Thông báo">
+                <i class="fa-solid fa-bell"></i>
+                <span class="notif-badge" id="notifBadge">0</span>
+            </button>
+            <button class="hbtn hbtn-user" id="userBtn" onclick="toggleUserMenu()" title="Tài khoản">
+                <i class="fa-solid fa-user"></i>
+            </button>
+            <button class="hbtn hbtn-menu" onclick="toggleMenu()" title="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Search bar -->
+    <div class="search-wrap" id="searchBox">
+        <div class="search-inner">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <form action="/" id="searchForm" autocomplete="off" style="flex:1">
+                <input type="text" id="liveSearchInput" name="search" placeholder="🔍 Tìm tên truyện...">
+            </form>
+            <i class="fa-solid fa-xmark" style="cursor:pointer;color:var(--text-muted)" onclick="toggleSearch()"></i>
+        </div>
+        <div class="search-results" id="liveSearchResults"></div>
+        <a href="/tim-kiem-nang-cao" class="search-advanced-link">
+            <i class="fa-solid fa-sliders"></i>
+            Tùy chọn tìm kiếm nâng cao
+        </a>
+    </div>
+</div>
+
+<!-- Ticker -->
+<div class="ticker-bar">
+    <span class="ticker-tag">NOTICE</span>
+    <div class="ticker-scroll-wrap">
+        <span class="ticker-scroll-inner">
+            ✦ Web cập nhật liên tục <span class="ticker-sep">|</span>
+            Báo lỗi nếu truyện bị sự cố <span class="ticker-sep">|</span>
+            Hoạt động cả ngày Chủ nhật từ 18h <span class="ticker-sep">|</span>
+            Đọc manhua miễn phí tại VManhua <span class="ticker-sep">|</span>
+            Mọi thắc mắc vui lòng liên hệ admin <span class="ticker-sep">|</span>
+        </span>
+    </div>
+</div>
+
+<!-- OVERLAY + SIDEBAR -->
+<div class="overlay" id="overlay" onclick="closeAll()"></div>
+
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-logo-wrap">
+            <img src="/static/logo.jpg">
+        </div>
+        <div class="sidebar-title">V<span>MANHUA</span></div>
+        <div class="sidebar-sub">🌸 HỆ THỐNG LUNARIS 🌸</div>
+    </div>
+    <div class="side-nav">
+        <a href="/" class="side-link">
+            <div class="s-icon ic-blue"><i class="fa-solid fa-house"></i></div>
+            Trang chủ
+        </a>
+        <a href="/dangtruyen" class="side-link">
+            <div class="s-icon ic-red"><i class="fa-solid fa-pen-to-square"></i></div>
+            Đăng truyện
+        </a>
+        <a href="/theodoi" class="side-link">
+            <div class="s-icon ic-pink"><i class="fa-solid fa-bookmark"></i></div>
+            Đang theo dõi
+        </a>
+        <a href="#" class="side-link" onclick="toggleMenu();toggleNotifPopup();return false;">
+            <div class="s-icon ic-orange"><i class="fa-solid fa-bell"></i></div>
+            Thông báo
+        </a>
+        <a href="/lichsu" class="side-link">
+            <div class="s-icon ic-red"><i class="fa-solid fa-clock-rotate-left"></i></div>
+            Lịch sử đọc
+        </a>
+        <a href="/theloai" class="side-link">
+            <div class="s-icon ic-teal"><i class="fa-solid fa-tags"></i></div>
+            Thể loại
+        </a>
+        <a href="/request" class="side-link">
+            <div class="s-icon ic-purple"><i class="fa-solid fa-paper-plane"></i></div>
+            Yêu cầu truyện
+        </a>
+        <a href="/cache" class="side-link">
+            <div class="s-icon ic-green"><i class="fa-solid fa-database"></i></div>
+            Quản lý Cache
+        </a>
+        <a href="/contact" class="side-link">
+            <div class="s-icon ic-orange"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            Báo lỗi
+        </a>
+        <a href="/soucode" class="side-link">
+            <div class="s-icon ic-teal"><i class="fa-solid fa-code"></i></div>
+            Project Structure
+        </a>
+    </div>
+    <div class="sidebar-footer">🌙 Lunaris · 🌙 Lunaris · 🌙 Lunaris · Made with 💙 by VManhua 🌸</div>
+</div>
+
+<!-- NOTIFICATION POPUP -->
+<div class="notif-popup" id="notifPopup">
+    <div class="notif-popup-header">
+        <div class="notif-popup-title"><i class="fa-solid fa-bell"></i> THÔNG BÁO</div>
+        <button class="notif-mark-read" onclick="markNotifRead()"><i class="fa-solid fa-check-double"></i> Đã đọc</button>
+    </div>
+    <div class="notif-popup-list" id="notifPopupList">
+        <div class="notif-popup-empty"><i class="fa-solid fa-bell-slash"></i> Chưa có thông báo mới</div>
+    </div>
+    <div class="notif-popup-footer"><a href="/thongbao">Xem tất cả →</a></div>
+</div>
+
+<!-- USER MENU POPUP -->
+<div class="user-menu-popup" id="userMenuPopup">
+    <div class="user-menu-header" id="userMenuHeader">
+        <div class="user-menu-name" id="userMenuName">Khách</div>
+        <div class="user-menu-sub" id="userMenuSub">Chưa đăng nhập</div>
+    </div>
+    <a href="/" class="user-menu-item"><i class="fa-solid fa-house"></i> Trang chủ</a>
+    <div id="userMenuAuth">
+        <a href="/dangnhap" class="user-menu-item"><i class="fa-solid fa-right-to-bracket"></i> Đăng nhập / Đăng ký</a>
+    </div>
+    <div id="userMenuLoggedIn" style="display:none">
+        <a href="/hosocanhan" class="user-menu-item"><i class="fa-solid fa-user"></i> Hồ sơ cá nhân</a>
+        <button class="user-menu-item danger" onclick="userLogout()"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</button>
+    </div>
+    <a href="/dangtruyen" class="user-menu-item"><i class="fa-solid fa-pen-to-square"></i> Đăng truyện</a>
+    <a href="/theodoi" class="user-menu-item"><i class="fa-solid fa-bookmark"></i> Đang theo dõi</a>
+    <a href="/thongbao" class="user-menu-item"><i class="fa-solid fa-bell"></i> Thông báo</a>
+    <a href="/lichsu" class="user-menu-item"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đọc</a>
+    <a href="/theloai" class="user-menu-item"><i class="fa-solid fa-tags"></i> Thể loại</a>
+    <a href="/request" class="user-menu-item"><i class="fa-solid fa-paper-plane"></i> Yêu cầu truyện</a>
+    <a href="/cache" class="user-menu-item"><i class="fa-solid fa-database"></i> Quản lý Cache</a>
+    <a href="/contact" class="user-menu-item"><i class="fa-solid fa-triangle-exclamation"></i> Báo lỗi</a>
+    <a href="/soucode" class="user-menu-item"><i class="fa-solid fa-code"></i> Project Structure</a>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+    {% if cur_tag %}
+    <div class="active-tag-pill">
+        <div class="tag-icon"><i class="fa-solid fa-tag"></i></div>
+        Thể loại: {{cur_tag}}
+        <a href="/?search={{q}}&status={{cur_status}}" class="tag-close" title="Bỏ lọc">✕</a>
+    </div>
+    {% elif cur_author %}
+    <div class="active-tag-pill">
+        <div class="tag-icon"><i class="fa-solid fa-pen-nib"></i></div>
+        Tác giả: {{cur_author}}
+        <a href="/?search={{q}}&status={{cur_status}}" class="tag-close" title="Bỏ lọc">✕</a>
+    </div>
+    {% elif cur_trans %}
+    <div class="active-tag-pill">
+        <div class="tag-icon"><i class="fa-solid fa-users"></i></div>
+        Nhóm dịch: {{cur_trans}}
+        <a href="/?search={{q}}&status={{cur_status}}" class="tag-close" title="Bỏ lọc">✕</a>
+    </div>
+    {% elif cur_translator %}
+    <div class="active-tag-pill">
+        <div class="tag-icon"><i class="fa-solid fa-user-pen"></i></div>
+        Người dịch: {{cur_translator}}
+        <a href="/?search={{q}}&status={{cur_status}}" class="tag-close" title="Bỏ lọc">✕</a>
+    </div>
+    {% else %}
+    <div class="section-title-pill">
+        <span class="st-indicator"></span>
+        TRUYỆN MỚI CẬP NHẬT
+    </div>
+    {% endif %}
+
+    <div class="custom-dropdown" id="sortDropdown">
+        <div class="dropdown-trigger" id="dropdownTrigger" onclick="toggleDropdown()">
+            {% if cur_status == 'Hoàn thành' %}
+            <i class="fa-regular fa-circle-check dt-icon"></i>
+            {% elif cur_status == 'Đang tiến hành' %}
+            <i class="fa-solid fa-spinner dt-icon"></i>
+            {% elif cur_status == 'Tạm dừng' %}
+            <i class="fa-regular fa-star dt-icon"></i>
+            {% elif cur_status == 'Dừng dịch' %}
+            <i class="fa-regular fa-eye dt-icon"></i>
+            {% else %}
+            <i class="fa-regular fa-clock dt-icon"></i>
+            {% endif %}
+            <span id="dropdownLabel">
+                {% if cur_status == 'Hoàn thành' %}End
+                {% elif cur_status == 'Tạm dừng' %}Tạm dừng
+                {% elif cur_status == 'Dừng dịch' %}Dừng dịch
+                {% elif cur_status == 'Đang tiến hành' %}Tiến hành
+                {% else %}Mới cập nhật{% endif %}
+            </span>
+            <i class="fa-solid fa-chevron-down dt-chevron"></i>
+        </div>
+        <div class="dropdown-panel" id="dropdownPanel">
+            <div class="dp-label">Sắp xếp theo</div>
+            <div class="dp-item {% if not cur_status %}active{% endif %}" onclick="applyFilter('')">
+                <i class="fa-regular fa-clock dp-item-icon"></i>
+                Mới cập nhật
+                <i class="fa-solid fa-check dp-item-check"></i>
+            </div>
+            <div class="dp-item {% if cur_status == 'Đang tiến hành' %}active{% endif %}" onclick="applyFilter('Đang tiến hành')">
+                <i class="fa-solid fa-spinner dp-item-icon"></i>
+                Tiến hành
+                <i class="fa-solid fa-check dp-item-check"></i>
+            </div>
+            <div class="dp-item {% if cur_status == 'Hoàn thành' %}active{% endif %}" onclick="applyFilter('Hoàn thành')">
+                <i class="fa-regular fa-circle-check dp-item-icon"></i>
+                End
+                <i class="fa-solid fa-check dp-item-check"></i>
+            </div>
+            <div class="dp-item {% if cur_status == 'Tạm dừng' %}active{% endif %}" onclick="applyFilter('Tạm dừng')">
+                <i class="fa-regular fa-star dp-item-icon"></i>
+                Tạm dừng
+                <i class="fa-solid fa-check dp-item-check"></i>
+            </div>
+            <div class="dp-item {% if cur_status == 'Dừng dịch' %}active{% endif %}" onclick="applyFilter('Dừng dịch')">
+                <i class="fa-regular fa-eye dp-item-icon"></i>
+                Dừng dịch
+                <i class="fa-solid fa-check dp-item-check"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- COMIC GRID -->
+<div class="grid" id="comic-grid">
+    {% for c in comics %}
+    <div class="card" data-id="{{c.real_name}}">
+        <div class="card-thumb">
+            {%- set _tags_lower = c.tags | join('|') | lower -%}
+            {% if c.status == 'Hoàn thành' %}
+            <div class="badge badge-end">End</div>
+            {% elif c.status == 'Tạm dừng' %}
+            <div class="badge badge-pause">Tạm dừng</div>
+            {% elif c.status == 'Dừng dịch' %}
+            <div class="badge badge-dropped">Dừng dịch</div>
+            {% elif c.status == 'Đang tiến hành' and 'oneshot' not in _tags_lower %}
+            <div class="badge badge-ongoing">Tiến hành</div>
+            {% endif %}
+
+            <a href="/truyen/{{c.real_name}}">
+                <img src="/static/comics/{{c.real_name}}/cover.jpg?v={{c.cover_mtime or c.timestamp}}"
+                     loading="lazy"
+                     onerror="this.src='https://via.placeholder.com/200x300?text=No+Cover'">
+            </a>
+
+            <div class="badge-views">
+                <i class="fa-solid fa-eye"></i>
+                <span>{{c.views or '—'}}</span>
+            </div>
+        </div>
+
+        <div class="info">
+            <a href="/truyen/{{c.real_name}}" style="text-decoration:none;">
+                <div class="title">{{c.name}}</div>
+            </a>
+
+            {% for ch in c.chaps[:2] %}
+            <a href="/doc/{{c.real_name}}/{{ch.id}}" class="chap-link" style="text-decoration:none;">
+                <div class="chap-row" data-comic="{{c.real_name}}" data-chap="{{ch.id}}">
+                    {% if loop.first %}
+                    <div class="chap-icon chap-icon-new">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    {% else %}
+                    <div class="chap-icon chap-icon-old">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    {% endif %}
+                    <div class="chap-text">
+                        <div class="chap-name">
+                            {%- set lower_name = ch.name.lower() -%}
+                            {%- if lower_name.startswith('chương') or lower_name.startswith('side story') or 'oneshot' in lower_name or 'one shot' in lower_name -%}
+                                {%- set raw = ch.name -%}
+                            {%- else -%}
+                                {%- set raw = 'Chương ' + ch.name -%}
+                            {%- endif -%}
+                            {{raw.split(' - ')[0].strip()}}
+                        </div>
+                        <div class="chap-time">{{ch.time or 'Vừa cập nhật'}}</div>
+                    </div>
+                    {% if loop.first and c.status not in ['Hoàn thành', 'Tạm dừng', 'Dừng dịch'] %}
+                    <span class="chap-new-tag">NEW</span>
+                    {% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- PAGINATION -->
+<div id="pagination-wrapper">
+    {% if total > 1 %}
+    <div class="pagination">
+        <a href="/?page=1&search={{q}}&tag={{cur_tag}}&status={{cur_status}}&trans={{cur_trans}}&author={{cur_author}}&translator={{cur_translator}}"
+           class="p-link {{'disabled' if page == 1}}">
+            <i class="fa-solid fa-angles-left"></i>
+        </a>
+        <a href="/?page={{page - 1}}&search={{q}}&tag={{cur_tag}}&status={{cur_status}}&trans={{cur_trans}}&author={{cur_author}}&translator={{cur_translator}}"
+           class="p-link {{'disabled' if page == 1}}">
+            <i class="fa-solid fa-angle-left"></i>
+        </a>
+        <div class="p-link active">{{page}} / {{total}}</div>
+        <a href="/?page={{page + 1}}&search={{q}}&tag={{cur_tag}}&status={{cur_status}}&trans={{cur_trans}}&author={{cur_author}}&translator={{cur_translator}}"
+           class="p-link {{'disabled' if page == total}}">
+            <i class="fa-solid fa-angle-right"></i>
+        </a>
+        <a href="/?page={{total}}&search={{q}}&tag={{cur_tag}}&status={{cur_status}}&trans={{cur_trans}}&author={{cur_author}}&translator={{cur_translator}}"
+           class="p-link {{'disabled' if page == total}}">
+            <i class="fa-solid fa-angles-right"></i>
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <a href="/" class="bnav-item active">
+        <i class="fa-solid fa-house"></i>
+        Trang chủ
+    </a>
+    <a href="/theodoi" class="bnav-item">
+        <i class="fa-solid fa-bookmark"></i>
+        Theo dõi
+    </a>
+    <a href="/lichsu" class="bnav-item">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        Lịch sử
+    </a>
+    <a href="/theloai" class="bnav-item">
+        <i class="fa-solid fa-tags"></i>
+        Thể loại
+    </a>
+</nav>
+
+<!-- SYSTEM NOTIFY — nội dung và màu sắc đọc từ data/notify.json -->
+<div id="sys-notify" style="display:none">
+    <div class="notify-top">
+        <div class="notify-icon" id="notify-icon">🔥</div>
+        <div class="notify-body">
+            <div class="notify-label" id="notify-label">✦ System Alert ✦</div>
+            <div class="notify-msg" id="notify-msg"></div>
+            <div class="notify-author" id="notify-author"></div>
+        </div>
+    </div>
+    <div class="notify-btns">
+        <button class="notify-btn notify-btn-close" onclick="closeNotify(false)">
+            <i class="fa-solid fa-xmark"></i> <span id="notify-btn-close-text">Đóng</span>
+        </button>
+        <button class="notify-btn notify-btn-mute" id="notify-btn-mute" onclick="closeNotify(true)">
+            <i class="fa-solid fa-clock"></i> <span id="notify-btn-mute-text">Tắt trong 2 giờ</span>
+        </button>
+    </div>
+</div>
+
+<script>
+    /* Petal canvas — tắt để tiết kiệm CPU */
+    document.getElementById('sakura-canvas').style.display = 'none';
+
+    function getStatusData(status) {
+        const s = (status || '').trim();
+        if (s === 'Hoàn thành')     return { cls: 'end',     label: 'End'       };
+        if (s === 'Tạm dừng')       return { cls: 'pause',   label: 'Tạm dừng'  };
+        if (s === 'Dừng dịch')      return { cls: 'dropped', label: 'Dừng dịch' };
+        if (s === 'Đang tiến hành') return { cls: 'ongoing', label: 'Tiến hành' };
+        return null;
+    }
+
+    function toggleSearch() {
+        const box = document.getElementById('searchBox');
+        box.classList.toggle('active');
+        if (box.classList.contains('active')) document.getElementById('liveSearchInput').focus();
+    }
+
+    function toggleMenu() {
+        document.getElementById('sidebar').classList.add('active');
+        const ov = document.getElementById('overlay');
+        ov.style.display = 'block';
+        ov.classList.add('active-overlay');
+        document.getElementById('userMenuPopup').classList.remove('show');
+    }
+
+    function closeAll() {
+        document.getElementById('sidebar').classList.remove('active');
+        const ov = document.getElementById('overlay');
+        ov.style.display = 'none';
+        ov.classList.remove('active-overlay');
+        document.getElementById('liveSearchResults').classList.remove('show');
+        document.getElementById('userMenuPopup').classList.remove('show');
+    }
+
+    function toggleUserMenu() {
+        const popup = document.getElementById('userMenuPopup');
+        const notif = document.getElementById('notifPopup');
+        if (notif) notif.classList.remove('show');
+        popup.classList.toggle('show');
+        if (popup.classList.contains('show')) {
+            setTimeout(() => {
+                document.addEventListener('click', _closeUserMenuOutside, { once: true });
+            }, 10);
+        }
+    }
+    function _closeUserMenuOutside(e) {
+        const popup = document.getElementById('userMenuPopup');
+        const btn   = document.getElementById('userBtn');
+        if (popup && !popup.contains(e.target) && e.target !== btn) {
+            popup.classList.remove('show');
+        }
+    }
+    function userLogout() {
+        localStorage.removeItem('kirito2_user');
+        location.reload();
+    }
+    function _initUserMenu() {
+        const raw = localStorage.getItem('kirito2_user');
+        if (!raw) return;
+        try {
+            const u = JSON.parse(raw);
+            document.getElementById('userMenuName').textContent = u.username || 'Người dùng';
+            document.getElementById('userMenuSub').textContent  = '#' + (u.uid || '???');
+            document.getElementById('userMenuAuth').style.display     = 'none';
+            document.getElementById('userMenuLoggedIn').style.display = 'block';
+        } catch(e) {}
+    }
+    _initUserMenu();
+
+    /* Live search */
+    const searchInput = document.getElementById('liveSearchInput');
+    const resultsBox  = document.getElementById('liveSearchResults');
+
+    window.addEventListener('scroll', () => {
+        if (resultsBox.classList.contains('show')) resultsBox.classList.remove('show');
+    }, { passive: true });
+
+    document.addEventListener('click', function(e) {
+        const searchBox = document.getElementById('searchBox');
+        if (searchBox && !searchBox.contains(e.target)) resultsBox.classList.remove('show');
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            resultsBox.classList.remove('show');
+            document.getElementById('searchBox').classList.remove('active');
+        }
+    });
+
+    let _searchTimer = null;
+    searchInput.addEventListener('input', function () {
+        const query = this.value.trim();
+        if (!query) { resultsBox.innerHTML = ''; resultsBox.classList.remove('show'); return; }
+        clearTimeout(_searchTimer);
+        _searchTimer = setTimeout(() => {
+            fetch(`/api/search?q=${encodeURIComponent(query)}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (!data.length) { resultsBox.innerHTML = ''; resultsBox.classList.remove('show'); return; }
+                    let html = '';
+                    data.slice(0, 5).forEach(item => {
+                        const st = getStatusData(item.status);
+                        html += `
+                            <a href="/truyen/${item.real_name}" class="search-item">
+                                <img src="/static/comics/${item.real_name}/cover.jpg?v=${item.cover_mtime || item.timestamp || Date.now()}" onerror="this.src='https://via.placeholder.com/44x60'" loading="lazy">
+                                <div class="search-item-info">
+                                    <div class="search-item-title">${item.name}</div>
+                                    <div class="search-item-meta">
+                                        <span style="color:var(--accent-light)"><i class="fa-solid fa-layer-group" style="font-size:.7rem"></i> Chương ${item.latest_chap}</span>
+                                        ${st ? `<span class="pill pill-${st.cls}">${st.label}</span>` : ''}
+                                    </div>
+                                </div>
+                            </a>`;
+                    });
+                    html += `<a href="/?search=${encodeURIComponent(query)}" class="view-all-link">
+                        <i class="fa-solid fa-arrow-right"></i> Xem tất cả kết quả
+                    </a>`;
+                    resultsBox.innerHTML = html;
+                    resultsBox.classList.add('show');
+                });
+        }, 300);
+    });
+
+    /* Read history */
+    function updateReadStatus() {
+        document.querySelectorAll('.chap-row').forEach(row => {
+            const comic  = row.dataset.comic;
+            const chapId = row.dataset.chap;
+            const hist   = JSON.parse(localStorage.getItem('read_history_' + comic) || '[]');
+            row.classList.toggle('read', hist.includes(chapId));
+        });
+    }
+
+    /* JS card builder */
+    function createComicHTML(c) {
+        const st = getStatusData(c.status);
+        const isOngoing = !['Hoàn thành', 'Tạm dừng', 'Dừng dịch'].includes((c.status || '').trim());
+        let chapsHTML = '';
+        (c.chaps || []).slice(0, 2).forEach((ch, i) => {
+            const isSideStory = /^side\s*story/i.test(ch.name);
+            const isOneshot   = /one\s*shot/i.test(ch.name);
+            const rawName = (ch.name.toLowerCase().includes('chương') || isSideStory || isOneshot) ? ch.name : `Chương ${ch.name}`;
+            const name    = isSideStory ? rawName.trim() : rawName.split(' - ')[0].trim();
+            const isFirst = i === 0;
+            chapsHTML += `
+                <a href="/doc/${c.real_name}/${ch.id}" class="chap-link" style="text-decoration:none;">
+                    <div class="chap-row" data-comic="${c.real_name}" data-chap="${ch.id}">
+                        <div class="chap-icon ${isFirst ? 'chap-icon-new' : 'chap-icon-old'}">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <div class="chap-text">
+                            <div class="chap-name">${name}</div>
+                            <div class="chap-time">${ch.time || 'Vừa cập nhật'}</div>
+                        </div>
+                        ${isFirst && isOngoing ? '<span class="chap-new-tag">NEW</span>' : ''}
+                    </div>
+                </a>`;
+        });
+
+        return `
+            <div class="card" data-id="${c.real_name}">
+                <div class="card-thumb">
+                    ${st ? `<div class="badge badge-${st.cls}">${st.label}</div>` : ''}
+                    <a href="/truyen/${c.real_name}">
+                        <img src="/static/comics/${c.real_name}/cover.jpg?v=${c.cover_mtime || c.timestamp}"
+                             loading="lazy"
+                             onerror="this.src='https://via.placeholder.com/200x300?text=No+Cover'">
+                    </a>
+                    <div class="badge-views">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>${c.views || '—'}</span>
+                    </div>
+                </div>
+                <div class="info">
+                    <a href="/truyen/${c.real_name}" style="text-decoration:none;">
+                        <div class="title">${c.name}</div>
+                    </a>
+                    ${chapsHTML}
+                </div>
+            </div>`;
+    }
+
+    /* Poll for updates */
+    let currentState   = null;
+    let pageSize       = 20;
+    let prevTotalCount = 0;
+    let pendingRemovals = new Map();
+
+    function _cardStateOf(c) {
+        const h = c.chaps?.length ? c.chaps[0].id + ':' + c.chaps.length : 'empty';
+        return `${h}|${c.status}`;
+    }
+
+    async function checkUpdates() {
+        const p = new URLSearchParams(window.location.search);
+        if (p.get('search') || p.get('tag') || (p.get('page') && p.get('page') != '1')) return;
+        try {
+            const data      = await fetch('/api/list_comics', {cache: 'no-store'}).then(r => r.json());
+            const allComics = data.comics || [];
+            const page1     = allComics.slice(0, pageSize);
+            const page1Ids  = new Set(page1.map(c => c.real_name));
+            const state     = page1.map(c => `${c.real_name}|${_cardStateOf(c)}`).join('||');
+
+            if (currentState !== null && currentState !== state) {
+                const grid   = document.getElementById('comic-grid');
+                const domIds = [...grid.querySelectorAll('[data-id]')].map(el => el.dataset.id);
+
+                if (allComics.length > prevTotalCount) {
+                    pendingRemovals.clear();
+                    grid.innerHTML = page1.map(createComicHTML).join('');
+                    updateReadStatus();
+                    currentState   = state;
+                    prevTotalCount = allComics.length;
+                    return;
+                }
+
+                let needWait = false;
+                for (const id of domIds) {
+                    if (!page1Ids.has(id)) {
+                        const n = (pendingRemovals.get(id) || 0) + 1;
+                        pendingRemovals.set(id, n);
+                        if (n < 2) needWait = true;
+                    } else {
+                        pendingRemovals.delete(id);
+                    }
+                }
+                if (needWait) return;
+
+                grid.innerHTML = page1.map(createComicHTML).join('');
+                updateReadStatus();
+                currentState   = state;
+                prevTotalCount = allComics.length;
+            } else {
+                prevTotalCount = Math.max(prevTotalCount, allComics.length);
+                for (const [id] of pendingRemovals) {
+                    if (page1Ids.has(id)) pendingRemovals.delete(id);
+                }
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        pageSize = document.querySelectorAll('#comic-grid [data-id]').length || 20;
+        updateReadStatus();
+        fetch('/api/list_comics', {cache: 'no-store'}).then(r => r.json()).then(d => {
+            const allComics = d.comics || [];
+            const page1     = allComics.slice(0, pageSize);
+            currentState    = page1.map(x => `${x.real_name}|${_cardStateOf(x)}`).join('||');
+            prevTotalCount  = allComics.length;
+        }).catch(() => currentState = '');
+        setInterval(checkUpdates, 15000);
+    });
+
+    window.addEventListener('pageshow', function(e) {
+        if (e.persisted) { updateReadStatus(); }
+    });
+
+    /* Sort dropdown */
+    function toggleDropdown() {
+        const panel   = document.getElementById('dropdownPanel');
+        const trigger = document.getElementById('dropdownTrigger');
+        const isOpen  = panel.classList.contains('show');
+        panel.classList.toggle('show', !isOpen);
+        trigger.classList.toggle('open', !isOpen);
+    }
+
+    function applyFilter(status) {
+        window.location.href = '/?status=' + encodeURIComponent(status)
+            + '&search={{q}}&tag={{cur_tag}}'
+            + '&trans={{cur_trans}}&author={{cur_author}}&translator={{cur_translator}}';
+    }
+
+    document.addEventListener('click', function(e) {
+        const dd = document.getElementById('sortDropdown');
+        if (dd && !dd.contains(e.target)) {
+            document.getElementById('dropdownPanel').classList.remove('show');
+            document.getElementById('dropdownTrigger').classList.remove('open');
+        }
+    });
+
+    window.addEventListener('scroll', () => {
+        const panel = document.getElementById('dropdownPanel');
+        if (panel && panel.classList.contains('show')) {
+            panel.classList.remove('show');
+            document.getElementById('dropdownTrigger').classList.remove('open');
+        }
+    }, { passive: true });
+
+    /* Notification popup */
+    let notifOpen = false;
+
+    function toggleNotifPopup() {
+        const popup = document.getElementById('notifPopup');
+        notifOpen = !notifOpen;
+        popup.classList.toggle('show', notifOpen);
+        if (notifOpen) { renderNotifPopup(); clearNotifBadge(); }
+    }
+
+    function clearNotifBadge() {
+        const notifs  = getStoredNotifs();
+        const seenIds = notifs.map(n => n.real_name + '_' + n.latest_chap_id);
+        localStorage.setItem('dex_notif_seen', JSON.stringify(seenIds));
+        document.getElementById('bellBtn').classList.remove('has-notif');
+    }
+
+    function getStoredNotifs() {
+        try { return JSON.parse(localStorage.getItem('dex_notifs_cache') || '[]'); }
+        catch { return []; }
+    }
+
+    function renderNotifPopup() {
+        const list    = document.getElementById('notifPopupList');
+        const notifs  = getStoredNotifs();
+        const seenIds = JSON.parse(localStorage.getItem('dex_notif_seen') || '[]');
+        if (!notifs.length) {
+            list.innerHTML = '<div class="notif-popup-empty"><i class="fa-solid fa-bell-slash"></i> Chưa có thông báo mới</div>';
+            return;
+        }
+        list.innerHTML = notifs.map(n => {
+            const uid      = n.real_name + '_' + n.latest_chap_id;
+            const isUnread = !seenIds.includes(uid);
+            return `
+                <a href="/truyen/${n.real_name}" class="notif-popup-item ${isUnread ? 'unread' : ''}" onclick="markNotifRead()">
+                    ${isUnread ? '<div class="notif-dot-sm"></div>' : ''}
+                    <img src="/static/comics/${n.real_name}/cover.jpg?v=${n.cover_mtime || n.timestamp || Date.now()}" class="notif-thumb"
+                         onerror="this.src='https://via.placeholder.com/40x54?text=?'">
+                    <div class="notif-info">
+                        <div class="notif-name">${n.name}</div>
+                        <div class="notif-chap"><i class="fa-solid fa-bolt" style="font-size:.6rem"></i> Chương ${n.latest_chap} mới cập nhật</div>
+                        <div class="notif-time"><i class="fa-solid fa-clock" style="font-size:.6rem"></i> ${n.time}</div>
+                    </div>
+                </a>`;
+        }).join('');
+    }
+
+    function markNotifRead() {
+        clearNotifBadge();
+        document.querySelectorAll('.notif-popup-item.unread').forEach(el => {
+            el.classList.remove('unread');
+            const dot = el.querySelector('.notif-dot-sm');
+            if (dot) dot.remove();
+        });
+    }
+
+    async function pollNotifications() {
+        const followedRaw = JSON.parse(localStorage.getItem('dex_followed') || '[]');
+        if (!followedRaw.length) return;
+        const followMeta = JSON.parse(localStorage.getItem('dex_follow_meta') || '{}');
+        const items = followedRaw.map(name => ({ name, baseline_ts: followMeta[name] || 0 }));
+        try {
+            const res       = await fetch('/api/check_notifications', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ items })
+            });
+            const newNotifs = await res.json();
+            const oldCache  = getStoredNotifs();
+            const oldIds    = new Set(oldCache.map(n => n.real_name + '_' + n.latest_chap_id));
+            const seenIds   = JSON.parse(localStorage.getItem('dex_notif_seen') || '[]');
+            const seenSet   = new Set(seenIds);
+            let hasNew = false;
+            newNotifs.forEach(n => {
+                if (!oldIds.has(n.real_name + '_' + n.latest_chap_id)) hasNew = true;
+            });
+            localStorage.setItem('dex_notifs_cache', JSON.stringify(newNotifs));
+            const unreadCount = newNotifs.filter(n => !seenSet.has(n.real_name + '_' + n.latest_chap_id)).length;
+            const badge = document.getElementById('notifBadge');
+            const bell  = document.getElementById('bellBtn');
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                bell.classList.add('has-notif');
+            } else {
+                bell.classList.remove('has-notif');
+            }
+            if (notifOpen) renderNotifPopup();
+        } catch(e) { console.error('Notif poll error:', e); }
+    }
+
+    document.addEventListener('click', function(e) {
+        const popup = document.getElementById('notifPopup');
+        const bell  = document.getElementById('bellBtn');
+        if (notifOpen && !popup.contains(e.target) && !bell.contains(e.target)) {
+            notifOpen = false;
+            popup.classList.remove('show');
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        pollNotifications();
+        setInterval(pollNotifications, 60000);
+    });
+
+    /* System Notify — load từ /api/system_notify */
+    (function() {
+        const notify   = document.getElementById('sys-notify');
+        const MUTE_KEY = 'sys_notify_mute_until';
+        let   muteHours = 2;
+
+        function closeNotify(mute) {
+            notify.classList.remove('active');
+            notify.classList.add('hidden');
+            if (mute) {
+                const until = Date.now() + muteHours * 60 * 60 * 1000;
+                localStorage.setItem(MUTE_KEY, until);
+            }
+        }
+        window.closeNotify = closeNotify;
+
+        const muteUntil = parseInt(localStorage.getItem(MUTE_KEY) || '0', 10);
+        if (Date.now() < muteUntil) return;
+
+        fetch('/api/system_notify', {cache: 'no-store'})
+            .then(r => r.json())
+            .then(cfg => {
+                if (!cfg || !cfg.enabled) return;
+
+                // Nội dung
+                document.getElementById('notify-icon').textContent  = cfg.icon  || '🔥';
+                document.getElementById('notify-label').textContent = cfg.label || 'System Alert';
+                document.getElementById('notify-author').textContent = cfg.author || '';
+
+                const msgs = cfg.messages || [];
+                const msgEl = document.getElementById('notify-msg');
+                msgEl.innerHTML = msgs.map(m => `<p>${m}</p>`).join('');
+
+                // Text nút
+                const btnCloseT = document.getElementById('notify-btn-close-text');
+                const btnMuteT  = document.getElementById('notify-btn-mute-text');
+                if (btnCloseT) btnCloseT.textContent = cfg.btn_close_text || 'Đóng';
+                if (btnMuteT)  btnMuteT.textContent  = cfg.btn_mute_text  || 'Tắt 2 giờ';
+
+                // Màu nút mute (tuỳ chỉnh từ notify.json)
+                const btnMute = document.getElementById('notify-btn-mute');
+                if (btnMute) {
+                    if (cfg.btn_mute_bg)    btnMute.style.background = cfg.btn_mute_bg;
+                    if (cfg.btn_mute_color) btnMute.style.color      = cfg.btn_mute_color;
+                }
+
+                // Màu viền notify box
+                if (cfg.notify_border_color) {
+                    notify.style.borderColor = cfg.notify_border_color;
+                }
+
+                // Màu author
+                const authorEl = document.getElementById('notify-author');
+                if (authorEl && cfg.author_color) {
+                    authorEl.style.color = cfg.author_color;
+                }
+
+                muteHours = parseInt(cfg.mute_hours || 2, 10);
+
+                // Hiển thị
+                notify.style.display = '';
+                setTimeout(() => notify.classList.add('active'), 1200);
+            })
+            .catch(() => {});
+    })();
+</script>
+
+<!-- Kiểm tra bảo trì -->
+<script>
+(function(){
+    function _kiemTraBaoTri(){
+        fetch('/api/maintenance', {cache: 'no-store', priority: 'low'})
+            .then(function(r){ return r.json(); })
+            .then(function(d){ if (d && d.enabled) window.location.href = '/baotri'; })
+            .catch(function(){});
+    }
+    setTimeout(function(){ _kiemTraBaoTri(); setInterval(_kiemTraBaoTri, 60000); }, 5000);
+})();
+</script>
+
+</body>
+</html>
